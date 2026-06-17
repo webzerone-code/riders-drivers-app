@@ -23,7 +23,7 @@ export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(SOC
     transportOptions: {
         polling: {
             extraHeaders: {
-                authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNiZjk1OGIzLTFlNzYtNDI2NC1hYjMxLWFlNDkwZmM3YzA0OSIsImVtYWlsIjoid2ViemVyb25lQGdtYWlsLmNvbSIsInBob25lIjoiMDAyMDExMTA3NjkwMDAiLCJ1c2VyVHlwZSI6InJpZGVyIiwiaWF0IjoxNzgxNjE3OTUwLCJleHAiOjE3ODE3MDQzNTB9.c4XxFjxirP_FWAK9WZOKliB1jnP87jMyjPLTjQ9r7ow',
+                authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNiZjk1OGIzLTFlNzYtNDI2NC1hYjMxLWFlNDkwZmM3YzA0OSIsImVtYWlsIjoid2ViemVyb25lQGdtYWlsLmNvbSIsInBob25lIjoiMDAyMDExMTA3NjkwMDAiLCJ1c2VyVHlwZSI6InJpZGVyIiwiaWF0IjoxNzgxNzE4MTU0LCJleHAiOjE3ODE4MDQ1NTR9.vj_YBywTOu5XmDjlVoWNm95nTadrcgylFPNQmi3RK50',
             },
         },
     },
