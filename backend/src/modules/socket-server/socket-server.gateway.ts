@@ -11,6 +11,7 @@ import { SocketServerService } from './socket-server.service';
 import { JwtService } from '@nestjs/jwt';
 import { WsAuthMiddleware } from '../../middleware/ws.middleware';
 import { UpdateLocationDto } from './dtos/update-location.dto';
+import { INSTANCE_ID } from '../../config/server.instance';
 // import Redis from 'ioredis';
 // import { InjectRedis } from '@nestjs-modules/ioredis';
 
@@ -28,6 +29,7 @@ export class SocketServerGateway implements OnGatewayConnection {
   //afterInit(client: Socket) {
   afterInit() {
     this.server.use(WsAuthMiddleware(this.jwtService));
+    this.socketServerService.initSocketServer(this.server);
   }
 
   async handleConnection(client: Socket) {
@@ -36,8 +38,9 @@ export class SocketServerGateway implements OnGatewayConnection {
     // You can attach custom data to the client object safely
     //client['user']['sockerId'] = client.id;
     client.data.user.socketId = client.id;
+    client.data.user.instaceId = INSTANCE_ID;
     await this.socketServerService.connectUser(client.data.user.id, client.id);
-    console.log(client.data);
+    console.log(client.data.user);
   }
 
   @SubscribeMessage('update_location')
@@ -46,7 +49,6 @@ export class SocketServerGateway implements OnGatewayConnection {
     @MessageBody() data: UpdateLocationDto,
   ): Promise<void> {
     await this.socketServerService.updateUserLocation(client.data.user, data);
-    console.log(data);
   }
 
   // @SubscribeMessage('send_message')
@@ -61,6 +63,28 @@ export class SocketServerGateway implements OnGatewayConnection {
   //     timestamp: new Date().toISOString(),
   //   });
   // }
+
+  @SubscribeMessage('send_message')
+  async handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { text: string },
+  ): Promise<void> {
+    // 🟢 This sends to EVERYONE in that room (including the sender)
+    // this.server.emit('receive_message', {
+    //   id: crypto.randomUUID(), // Creates a completely unique string ID
+    //   text: data.text, // The clean text sent from React
+    //   timestamp: new Date().toISOString(),
+    // });
+    await this.socketServerService.sendMessageToInstance(INSTANCE_ID, {
+      targetSocketId: client.id,
+      eventName: 'receive_message',
+      data: {
+        id: crypto.randomUUID(), // Creates a completely unique string ID
+        text: data.text, // The clean text sent from React
+        timestamp: new Date().toISOString(),
+      },
+    });
+  }
 
   async handleDisconnect(client: Socket): Promise<void> {
     // TODO need check if the user has no trips before removing it

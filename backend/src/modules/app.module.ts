@@ -9,7 +9,6 @@ import { SocketServerModule } from './socket-server/socket-server.module';
 import JwtConfig from '../config/jwt.config';
 import redisConfig from '../config/redis.config';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { ClientsModule } from '@nestjs/microservices';
 import rabbitMQConfig from '../config/rabbitMQ.config';
 import MongoDbConfig from '../config/mongo-db.config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -45,16 +44,6 @@ import { MongooseModule } from '@nestjs/mongoose';
         uri: mongoConfig.url,
       }),
     }),
-    ClientsModule.registerAsync([
-      {
-        name: 'UserLocationHistoryService',
-        inject: [rabbitMQConfig.KEY],
-        useFactory: (rabbitmq_config: ConfigType<typeof rabbitMQConfig>) => ({
-          transport: rabbitmq_config.transport,
-          options: rabbitmq_config.options,
-        }),
-      },
-    ]),
     AuthModule,
     UserModule,
     SocketServerModule,
