@@ -1,0 +1,25 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 500       # Exactly 8.3 minutes
+      arrivalRate: 20     # 20 * 500 = Exactly 10,000 users created
+      name: "Linear ramp to 10k users"
+    - duration: 30        # Keeps the 10,000 users active for an extra 30 seconds
+      arrivalRate: 0      # Do not create any more users
+      name: "Sustained peak test phase"
+
+  engines:
+    socketio: {}
+
+  socketio:
+    transports: ["polling", "websocket"]
+    extraHeaders:
+      authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNiZjk1OGIzLTFlNzYtNDI2NC1hYjMxLWFlNDkwZmM3YzA0OSIsImVtYWlsIjoid2ViemVyb25lQGdtYWlsLmNvbSIsInBob25lIjoiMDAyMDExMTA3NjkwMDAiLCJ1c2VyVHlwZSI6InJpZGVyIiwiaWF0IjoxNzgwOTU0NjEwLCJleHAiOjE3ODEwNDEwMTB9.njB5Co5EMvD5upxcakuJRF6I4saCtDvxJHawhgzMlfE"
+
+scenarios:
+  - name: "Authenticated Rider Session"
+    engine: socketio
+    flow:
+      - loop:
+          - think: 600
+        #whileTrue: true
